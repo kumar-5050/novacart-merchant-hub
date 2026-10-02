@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#0F172A] text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Cart | Smart Merchant Hub</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            slateBg: '#0F172A',
+            cardBg: '#1E293B',
+            borderBg: '#334155'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .glow-alert { animation: pulseGlow 2s infinite ease-in-out; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0F172A; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+  </style>
+</head>
+<body class="min-h-full bg-[#0F172A] text-slate-100 font-sans antialiased flex flex-col relative pb-20">
+
+  <!-- TOP HEADER / NAV BAR -->
+  <header class="sticky top-0 z-40 bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-4">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <svg class="w-6 h-6 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-white">Nova Cart</h1>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-medium border border-emerald-500/20">Merchant Hub v2.4</span>
+          </div>
+          <p class="text-xs text-slate-400">Autonomous Neighborhood Inventory Engine</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 text-xs sm:text-sm">
+        <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="text-slate-300 font-medium">Store #620 - Central District</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FLOATING TOP TOAST NOTIFICATION CONTAINER -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 w-full mt-4">
+    <div id="toastBanner" class="hidden flex items-center justify-between p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 shadow-xl backdrop-blur-md transition-all duration-300">
+      <div class="flex items-center gap-3">
+        <div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <h4 class="font-bold text-emerald-300 text-sm">Synchronization Confirmed</h4>
+          <p id="toastText" class="text-xs sm:text-sm text-emerald-100/90 font-medium"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6 w-full space-y-8 flex-1">
+
+    <!-- 1. TOP METRICS BAND -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Live Inventory Accuracy -->
+      <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-6 relative shadow-lg">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Live Inventory Accuracy</p>
+        <h3 id="metricAccuracy" class="text-4xl font-black text-red-500 mt-2 transition-all duration-300">68%</h3>
+        <div class="w-full bg-slate-700/60 rounded-full h-2 mt-4 overflow-hidden">
+          <div id="accuracyProgress" class="bg-red-500 h-2 rounded-full transition-all duration-500" style="width: 68%;"></div>
+        </div>
+        <p id="accuracyStatus" class="text-xs font-medium text-red-400 mt-2">Attention Required: Critical Feed Mismatch</p>
+      </div>
+
+      <!-- Active Store Orders -->
+      <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-6 relative shadow-lg">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Store Orders</p>
+        <h3 class="text-4xl font-black text-sky-400 mt-2">14</h3>
+        <div class="w-full bg-slate-700/60 rounded-full h-2 mt-4 overflow-hidden"><div class="bg-sky-400 h-2 rounded-full" style="width: 75%;"></div></div>
+        <p class="text-xs text-slate-400 mt-2">Fulfillment workflow stable</p>
+      </div>
+
+      <!-- Predicted Stockouts Today -->
+      <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-6 relative shadow-lg">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Predicted Stockouts Today</p>
+        <h3 id="metricStockouts" class="text-4xl font-black text-amber-500 mt-2">8</h3>
+        <div class="w-full bg-slate-700/60 rounded-full h-2 mt-4 overflow-hidden"><div id="stockoutProgress" class="bg-amber-500 h-2 rounded-full" style="width: 55%;"></div></div>
+        <p id="stockoutStatus" class="text-xs text-amber-400 mt-2">Friction risk imminent for local orders</p>
+      </div>
+    </section>
+
+    <!-- WORKSPACE CORE SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- LEFT CONTAINER: SCANNER BOX -->
+      <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-4">
+        <div>
+          <h3 class="text-lg font-bold text-white">AI Smart Stock Scanner</h3>
+          <p class="text-xs text-slate-400">Type a text message of your current arrivals to update catalog cache instantly.</p>
+        </div>
+        <textarea id="scannerInput" rows="5" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-emerald-500" placeholder='Example: "Added 25 units of fresh milk packets and 10 loaves of brown bread to primary display rack."'></textarea>
+        <button onclick="processScanner()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-3 px-4 rounded-xl transition-colors shadow-lg shadow-emerald-600/20">
+          Process Inventory with Nova AI
+        </button>
+      </div>
+
+      <!-- RIGHT CONTAINER: ALERTS INSIGHTS -->
+      <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-4">
+        <h3 class="text-lg font-bold text-white">Predictive Neighborhood Demand Alerts</h3>
+        <div id="alertsContainer" class="space-y-3">
+          <div class="bg-slate-900/80 p-4 border border-slate-700/60 rounded-xl flex items-center justify-between">
+            <div><h4 class="text-sm font-bold text-slate-200">Fresh Whole Milk</h4><p class="text-xs text-slate-400">Current Stock: 4 units remaining</p></div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 font-medium border border-red-500/20 glow-alert">High Demand Expected Tonight</span>
+          </div>
+          <div class="bg-slate-900/80 p-4 border border-slate-700/60 rounded-xl flex items-center justify-between">
+            <div><h4 class="text-sm font-bold text-slate-200">Farm Fresh Eggs (Pack of 6)</h4><p class="text-xs text-slate-400">Current Stock: 2 units remaining</p></div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 font-medium border border-red-500/20 glow-alert">High Demand Expected Tonight</span>
+          </div>
+          <div class="bg-slate-900/80 p-4 border border-slate-700/60 rounded-xl flex items-center justify-between">
+            <div><h4 class="text-sm font-bold text-slate-200">Sliced White Bread</h4><p class="text-xs text-slate-400">Current Stock: 5 units remaining</p></div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 font-medium border border-amber-500/20">Running Low - Restock Promptly</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FLOATING CHAT SYSTEM CONTAINER -->
+  <div class="fixed bottom-4 right-4 z-50 max-w-sm w-full">
+    <div id="chatWidget" class="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl flex flex-col hidden h-96 transition-all duration-300">
+      <div class="p-4 bg-slate-900 rounded-t-2xl border-b border-slate-700 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+          <h4 class="text-sm font-bold text-white">Ask Nova AI Partner Assistant</h4>
+        </div>
+        <button onclick="toggleChat()" class="text-slate-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+      </div>
+      <div id="chatLogs" class="p-4 flex-1 overflow-y-auto space-y-3 text-xs">
+        <div class="bg-slate-900 p-3 rounded-xl text-slate-300 max-w-[85%]">Hello Merchant! I am monitoring your neighborhood storefront. Ask me anything about stock optimization or operations metrics.</div>
+      </div>
+      <div class="p-3 bg-slate-900 border-t border-slate-700 rounded-b-2xl flex gap-2">
+        <input id="chatInput" type="text" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500" placeholder="Type a message (e.g. 'What will sell out today?')..." onkeypress="handleChatKey(event)">
+        <button onclick="sendChatMessage()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-3 py-2 rounded-xl transition-colors">Send</button>
+      </div>
+    </div>
+    <button id="chatToggleBtn" onclick="toggleChat()" class="float-right bg-gradient-to-r from-emerald-600 to-teal-500 text-slate-950 font-bold px-4 py-3 rounded-full flex items-center gap-2 shadow-xl hover:from-emerald-500 transition-all">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+      <span>Ask Nova AI</span>
+    </button>
+  </div>
+
+  <script>
+    function processScanner() {
+      const input = document.getElementById('scannerInput').value.trim();
+      if(!input) return;
+
+      const accuracy = document.getElementById('metricAccuracy');
+      const progress = document.getElementById('accuracyProgress');
+      const status = document.getElementById('accuracyStatus');
+      const stockouts = document.getElementById('metricStockouts');
+      const stockProgress = document.getElementById('stockoutProgress');
+
+      accuracy.textContent = "94%";
+      accuracy.className = "text-4xl font-black text-emerald-400 mt-2 tracking-tight transition-colors duration-500";
+      progress.style.width = "94%";
+      progress.className = "bg-emerald-500 h-2 rounded-full transition-all duration-700 ease-out";
+      status.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Catalog Feed Synchronized Seamlessly';
+      status.className = "text-xs font-medium text-emerald-400 flex items-center gap-1.5 mt-1";
+      
+      stockouts.textContent = "2";
+      stockProgress.style.width = "15%";
+
+      const toast = document.getElementById('toastBanner');
+      document.getElementById('toastText').textContent = "Nova AI: Plain-Text Inventory Update Parsed. 620 Store Feed Synchronized Successfully.";
+      toast.className = "flex items-center justify-between p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 shadow-xl backdrop-blur-md transition-all duration-300 transform translate-y-0 opacity-100";
+      
+      document.getElementById('alertsContainer').innerHTML = `
+        <div class="bg-slate-900/80 p-4 border border-emerald-500/30 rounded-xl flex items-center justify-between">
+          <div><h4 class="text-sm font-bold text-slate-200">Fresh Whole Milk</h4><p class="text-xs text-emerald-400">Stock Synced: 29 units</p></div>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-medium border border-emerald-500/20">Stable</span>
+        </div>
+        <div class="bg-slate-900/80 p-4 border border-emerald-500/30 rounded-xl flex items-center justify-between">
+          <div><h4 class="text-sm font-bold text-slate-200">Farm Fresh Eggs (Pack of 6)</h4><p class="text-xs text-emerald-400">Stock Synced: 24 units</p></div>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-medium border border-emerald-500/20">Stable</span>
+        </div>
+      `;
+    }
+
+    function toggleChat() {
+      const chat = document.getElementById('chatWidget');
+      const btn = document.getElementById('chatToggleBtn');
+      chat.classList.toggle('hidden');
+      btn.classList.toggle('hidden');
+    }
+
+    function handleChatKey(e) {
+      if(e.key === 'Enter') sendChatMessage();
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim().toLowerCase();
+      if(!text) return;
+
+      const logs = document.getElementById('chatLogs');
+      logs.innerHTML += `<div class="bg-slate-700 p-3 rounded-xl text-slate-100 max-w-[85%] ml-auto text-right">${input.value}</div>`;
+      input.value = "";
+      logs.scrollTop = logs.scrollHeight;
+
+      setTimeout(() => {
+        let reply = "I am monitoring your storefront catalog logs. Systems are stable.";
+        if(text.includes('sell out') || text.includes('stockout') || text.includes('demand')) {
+          reply = "<strong>Nova AI Predictive Analysis:</strong> Local commuter foot traffic indices indicate a 140% spike in grocery demands tonight. Milk and Bread are projected to hit zero stock items by 6:15 PM if not handled. Recommended Action: Catalog allocation buffer applied.";
+        } else if(text.includes('ticket') || text.includes('support') || text.includes('cancel')) {
+          reply = "<strong>Nova AI Operations Feed:</strong> Platform-wide customer support tickets peaked at 5,900/month due to a 9.2-hour delay. Maintaining catalog accuracy right here prevents order cancellation tickets at the source.";
+        }
+        
+        logs.innerHTML += `<div class="bg-slate-900 p-3 rounded-xl text-emerald-400 max-w-[85%]">${reply}</div>`;
+        logs.scrollTop = logs.scrollHeight;
+      }, 400);
+    }
+  </script>
+</body>
+</html>
+     
